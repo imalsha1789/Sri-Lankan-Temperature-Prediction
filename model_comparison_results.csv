@@ -1,0 +1,11 @@
+Model,MAE,RMSE,R2
+Random Forest,0.839,1.093,0.892
+XGBoost,0.818,1.063,0.898
+LightGBM,0.819,1.062,0.898
+CatBoost,0.856,1.108,0.889
+Stacking,0.814,1.053,0.9
+Hybrid (RF + ANN),0.827,1.079,0.895
+Tuned Random Forest,0.837,1.09,0.892
+Tuned XGBoost,0.815,1.057,0.899
+Tuned LightGBM,0.819,1.062,0.898
+Tuned CatBoost,0.822,1.067,0.897
