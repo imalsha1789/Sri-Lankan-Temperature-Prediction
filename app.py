@@ -1,6 +1,7 @@
 
 import streamlit as st
 import pandas as pd
+import numpy as np
 import joblib
 from pathlib import Path
 
@@ -16,7 +17,7 @@ st.set_page_config(
 )
 
 BASE_DIR = Path(__file__).resolve().parent
-MODEL_PATH = BASE_DIR / "stacking_model.pkl"
+MODEL_PATH = BASE_DIR / "stacking_model_time_based.pkl"
 DATA_PATH = BASE_DIR / "dataset" / "cleaned_weather.csv"
 
 
@@ -50,14 +51,10 @@ st.markdown("""
     padding: 2rem 2rem 2rem 2rem;
 }
 
-/* HEADER */
-
 header[data-testid="stHeader"] {
     background: var(--background) !important;
     height: 2.5rem;
 }
-
-/* TEXT */
 
 html, body, [class*="css"] {
     color: var(--text);
@@ -314,7 +311,12 @@ if not DATA_PATH.exists():
     st.stop()
 
 try:
-    model = load_model(str(MODEL_PATH))
+    bundle = load_model(str(MODEL_PATH))
+
+    preprocessor = bundle["preprocessor"]
+    base_models = bundle["base_models"]
+    meta_model = bundle["meta_model"]
+
     data = load_data(str(DATA_PATH))
 
 except Exception as error:
@@ -630,7 +632,16 @@ elif page == "Temperature Prediction":
 
         try:
 
-            prediction = float(model.predict(input_data)[0])
+            processed_input = preprocessor.transform(input_data)
+
+            base_predictions = np.column_stack([
+                base_model.predict(processed_input)
+                for _, base_model in base_models
+            ])
+
+            prediction = float(
+                meta_model.predict(base_predictions)[0]
+            )
 
             st.divider()
             st.subheader("Prediction Result")
@@ -679,15 +690,15 @@ elif page == "Model Analysis":
         ],
         "MAE": [
             0.839, 0.818, 0.819,
-            0.858, 0.811, 0.872
+            0.858, 0.806, 0.872
         ],
         "RMSE": [
             1.093, 1.063, 1.062,
-            1.109, 1.057, 1.131
+            1.109, 1.045, 1.131
         ],
         "R² Score": [
             0.892, 0.898, 0.898,
-            0.889, 0.899, 0.884
+            0.889, 0.901, 0.884
         ]
     })
 
@@ -697,9 +708,9 @@ elif page == "Model Analysis":
 
     metric1, metric2, metric3 = st.columns(3)
 
-    metric1.metric("Stacking MAE", "0.811 °C")
-    metric2.metric("Stacking RMSE", "1.057 °C")
-    metric3.metric("Stacking R²", "0.899")
+    metric1.metric("Stacking MAE", "0.806 °C")
+    metric2.metric("Stacking RMSE", "1.045 °C")
+    metric3.metric("Stacking R²", "0.901")
 
     st.divider()
 
@@ -747,8 +758,6 @@ elif page == "Model Analysis":
 
     st.divider()
 
-    # PERFORMANCE COMPARISON DASHBOARD
-
     st.markdown(
         "<div style='padding-top: 12px;'></div>",
         unsafe_allow_html=True
@@ -765,9 +774,9 @@ elif page == "Model Analysis":
 
     perf1, perf2, perf3 = st.columns(3)
 
-    perf1.metric("Best MAE", "0.811 °C")
-    perf2.metric("Best RMSE", "1.057 °C")
-    perf3.metric("Best R² Score", "0.899")
+    perf1.metric("Best MAE", "0.806 °C")
+    perf2.metric("Best RMSE", "1.045 °C")
+    perf3.metric("Best R² Score", "0.901")
 
     st.divider()
 
@@ -796,7 +805,7 @@ elif page == "Model Analysis":
             ),
             "guidance": "Lower values indicate better performance.",
             "best_model": "Stacking",
-            "best_value": "0.811 °C",
+            "best_value": "0.806 °C",
             "color": "#5799D2"
         },
         "RMSE": {
@@ -808,7 +817,7 @@ elif page == "Model Analysis":
             ),
             "guidance": "Lower values indicate better performance.",
             "best_model": "Stacking",
-            "best_value": "1.057 °C",
+            "best_value": "1.045 °C",
             "color": "#397FC1"
         },
         "R² Score": {
@@ -820,7 +829,7 @@ elif page == "Model Analysis":
             ),
             "guidance": "Higher values indicate better performance.",
             "best_model": "Stacking",
-            "best_value": "0.899",
+            "best_value": "0.901",
             "color": "#2563A6"
         }
     }
