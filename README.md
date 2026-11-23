@@ -64,6 +64,19 @@ The models were evaluated using the following performance metrics:
 
 Hyperparameter tuning was performed using GridSearchCV with 3-fold cross-validation for selected models.
 
+### Baseline Model Comparison Results
+
+| Model | MAE | RMSE | R² Score |
+|---|---:|---:|---:|
+| Stacking | 0.806 | 1.045 | 0.901 |
+| XGBoost | 0.818 | 1.063 | 0.898 |
+| LightGBM | 0.819 | 1.062 | 0.898 |
+| Random Forest | 0.839 | 1.093 | 0.892 |
+| CatBoost | 0.858 | 1.109 | 0.889 |
+| Hybrid RF + ANN | 0.872 | 1.131 | 0.884 |
+
+The Stacking Ensemble achieved the best overall baseline test performance among the six evaluated models.
+
 ## Technologies Used
 
 - Python
@@ -102,7 +115,7 @@ ML_Assignment/
 ├── dataset/
 │   └── Weather dataset CSV files
 │
-├── stacking_model_time_based.pkl
+├── stacking_model.pkl
 │
 ├── model_comparison_mae.png
 ├── model_comparison_r2.png
@@ -151,6 +164,10 @@ Generative AI tools were used as supporting tools during project development for
 - Documentation and explanation of project components.
 
 The project implementation, model experimentation, evaluation and final results were reviewed as part of the development process.
+
+## Live Dashboard
+
+https://sri-lankan-temperature-prediction.streamlit.app/
 
 ## GitHub Repository
 
