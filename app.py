@@ -17,7 +17,7 @@ st.set_page_config(
 )
 
 BASE_DIR = Path(__file__).resolve().parent
-MODEL_PATH = BASE_DIR / "stacking_model_time_based.pkl"
+MODEL_PATH = BASE_DIR / "stacking_model.pkl"
 DATA_PATH = BASE_DIR / "dataset" / "cleaned_weather.csv"
 
 

@@ -8,4 +8,4 @@ catboost_info/
 
 # Trained model files
 *.pkl
-!stacking_model_time_based.pkl
+!stacking_model.pkl
